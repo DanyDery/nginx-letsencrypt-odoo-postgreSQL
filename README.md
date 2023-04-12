@@ -1,4 +1,4 @@
-# Docker-Nginx-Certbot-Odoo-PG 
+# Nginx-Certbot-Odoo-PG in Docker
 
 This simple example shows how to set up an Odoo instance running behind a dockerized Nginx reverse proxy and served via HTTPS using free Let's Encrypt certificates by Certbot. New sites can be added on the fly by just modifying docker-compose.yml and then running docker-compose up as the main Nginx config is automatically updated and certificates (if needed) are automatically acquired.
 
