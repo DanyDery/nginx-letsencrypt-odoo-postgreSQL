@@ -1,0 +1,56 @@
+version: '3'
+services:
+    odoo:
+        container_name: odoo
+        image: odoo:15.0
+        restart: always
+        volumes:
+            - ./addons-extra:/mnt/extra-addons
+            - ./etc/odoo:/etc/odoo
+            - odoo-web-data:/var/lib/odoo
+        ports:
+            - 8069:8069
+        depends_on:
+            - postgres
+    postgres:
+        container_name: postgres
+        image: postgres:14
+        restart: unless-stopped
+        environment:
+            - POSTGRES_DB=postgres
+            - POSTGRES_PASSWORD=odoo
+            - POSTGRES_USER=odoo
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+            - odoo-db-data:/var/lib/postgresql/data/pgdata
+    nginx:
+        container_name: nginx
+        image: nginx:latest
+        restart: always
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./nginx/conf/:/etc/nginx/conf.d/:ro
+            - ./certbot/www:/var/www/certbot/:ro
+            - ./certbot/conf/:/etc/nginx/ssl/:ro
+    certbot:
+        container_name: certbot
+        image: certbot/certbot:latest
+        volumes:
+            - ./certbot/www/:/var/www/certbot/:rw
+            - ./certbot/conf/:/etc/letsencrypt/:rw
+
+    pgadmin:
+        container_name: pgadmin
+        image: dpage/pgadmin4
+        restart: always
+        environment:
+            PGADMIN_DEFAULT_EMAIL: email
+            PGADMIN_DEFAULT_PASSWORD: password
+        ports:
+            - 5050:80
+
+volumes:
+    odoo-web-data:
+    odoo-db-data:
